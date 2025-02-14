@@ -93,7 +93,7 @@ void calculer_score();
  * @param discord_interraction a struct with a pointer *event
  * @note need concord to work
  */
-void on_interaction(struct discord *client, const struct discord_interraction *event);
+void on_interaction(struct discord *client, struct discord_interraction *event);
 
 /**
  * @brief this the struct of pronostic call just after the line
@@ -101,7 +101,7 @@ void on_interaction(struct discord *client, const struct discord_interraction *e
  * 
  * @param pronostics[MAX_PRONOSTIC]
  */
-pronostic prosnostics[MAX_PRONOSTIC];
+pronostic pronostics[MAX_PRONOSTIC];
 
 /**
  * @brief 
@@ -143,8 +143,8 @@ void ajouter_pronostic(const char *username, const char *premier, const char *de
     {
         strcpy(pronostics[nombre_pronostic].username, username);                //  Copy the string input by the client          
         strcpy(pronostics[nombre_pronostic].premier, premier);                  //  in the file "pronos.txt" it takes 5 variables
-        strcpy(pronostics[nombre_pronostic].deuxieme, deuxieme);                //  the username, the winner, the second, the third
-        strcpy(pronostics[nombre_pronostic].troiseme, troisieme);               //  and the best lap according to the client
+        strcpy(pronostics[nombre_pronostic].deuxieme, deuxieme);               //  the username, the winner, the second, the third
+        strcpy(pronostics[nombre_pronostic].troisieme, troisieme);               //  and the best lap according to the client
         strcpy(pronostics[nombre_pronostic].meilleur_tour, meilleur_tour);      //
         nombre_pronostic++;
 
@@ -166,11 +166,11 @@ void ajouter_pronostic(const char *username, const char *premier, const char *de
 
 void commande_admin(const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour, const char *type)
 {
-    strcpy(pronostic[nombre_pronostic].premier, premier);                     // Copy the string input by the administrator
-    strcpy(pronostic[nombre_pronostic].deuxieme, deuxieme);                   // in the file "resultats.txt" it takes 5 variables
-    strcpy(pronostic[nombre_pronostic].troiseme, troisieme);                  // the winner, the second, the third, the best lap and 
-    strcpy(pronostic[nombre_pronostic].meilleur_tour, meilleur_tour);         // the type of the race. Now this the true result at the end of
-    strcpy(pronostic[nombre_pronostic].type, type);                           // the race
+    strcpy(pronostics[nombre_pronostic].premier, premier);                     // Copy the string input by the administrator
+    strcpy(pronostics[nombre_pronostic].deuxieme, deuxieme);                   // in the file "resultats.txt" it takes 5 variables
+    strcpy(pronostics[nombre_pronostic].troiseme, troisieme);                  // the winner, the second, the third, the best lap and 
+    strcpy(pronostics[nombre_pronostic].meilleur_tour, meilleur_tour);         // the type of the race. Now this the true result at the end of
+    strcpy(pronostics[nombre_pronostic].type, type);                           // the race
 
     FILE *fichier = fopen("resultats.txt", "w");                              // Open the file "resultats.txt" and have the permission of write in it
     if(fichier)
@@ -340,15 +340,13 @@ void calculer_score()
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void on_interaction(struct discord *client, const struct discord_interraction *event)
+void on_interaction(struct discord *client, struct discord_interraction *event)
 {
-    if(event->type == DISCORD_INTERACTION_APPLICATION_COMMAND)
-    {
+    if(event->type == DISCORD_INTERACTION_APPLICATION_COMMAND) //DISCORD_INTERACTION_APPLICATION_COMMAND 
+        {
         const char *command_name = event->data->name;
         const struct discord_application_command_interaction_data_option *command_options = event->data->options;
         int *nombre_elements = event->data->options->size;
-
-        struct discord_interaction_response response;
 
         /**
          * @brief command discord used by the client to put their pronostic
