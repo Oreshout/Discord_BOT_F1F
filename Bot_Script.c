@@ -29,7 +29,7 @@
  */
 #include "discord.h"
 #include "interaction.h"
-
+#include "discord-response.h"
 
 /**
  * @defgroup limit of actions
@@ -51,7 +51,7 @@
 
 /**
  * @brief Create a pronostic
- * @see ajouter_procedure()
+ * @see add_procedure()
  * 
  * @param username This is the username of the client
  * @param premier This the winner of the race according to the client
@@ -60,12 +60,12 @@
  * @param meilleur_tour This is the driver who did the fastest lap in the race according to the client
  * @note the procedure call a file "pronos.txt"
  */
-void ajouter_pronostic(const char *username, const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour);
+void add_pronostic(const char *username, const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour);
 
 
 /**
  * @brief Input after the race the winner, second, third and the fastest lap
- * @see commande_admin()
+ * @see command_admin()
  * 
  * @param premier This the winner of the race 
  * @param deuxieme This the second of the race 
@@ -74,16 +74,16 @@ void ajouter_pronostic(const char *username, const char *premier, const char *de
  * @param type This is for the type of the step / event of the week-end : Race, Sprint Race, Qualification
  * @note the procedure call a file "resultats.txt"
  */
-void commande_admin(const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour, const char *type);
+void command_admin(const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour, const char *type);
 
 
 /**
  * @brief To compute the score of the client after every race
- * @see calculer_score()
+ * @see compute_score()
  * 
  * @note call 2 files "resultats.txt" and "pronos.txt" to compare it and gives points 
  */
-void calculer_score();
+void compute_score();
 
 
 /**
@@ -133,7 +133,7 @@ typedef struct{
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void ajouter_pronostic(const char *username, const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour)
+void add_pronostic(const char *username, const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour)
 {
 
     if(nombre_pronostic > MAX_USERS)
@@ -165,11 +165,11 @@ void ajouter_pronostic(const char *username, const char *premier, const char *de
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void commande_admin(const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour, const char *type)
+void command_admin(const char *premier, const char *deuxieme, const char *troisieme, const char *meilleur_tour, const char *type)
 {
     strcpy(pronostics[nombre_pronostic].premier, premier);                     // Copy the string input by the administrator
     strcpy(pronostics[nombre_pronostic].deuxieme, deuxieme);                   // in the file "resultats.txt" it takes 5 variables
-    strcpy(pronostics[nombre_pronostic].troiseme, troisieme);                  // the winner, the second, the third, the best lap and 
+    strcpy(pronostics[nombre_pronostic].troisieme, troisieme);                  // the winner, the second, the third, the best lap and 
     strcpy(pronostics[nombre_pronostic].meilleur_tour, meilleur_tour);         // the type of the race. Now this the true result at the end of
     strcpy(pronostics[nombre_pronostic].type, type);                           // the race
 
@@ -187,7 +187,7 @@ void commande_admin(const char *premier, const char *deuxieme, const char *trois
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void calculer_score()
+void compute_score()
 {
     FILE *fichier_pronos = fopen("pronos.txt", "r");          // Open the file "pronos.txt" with the permission to read it
     FILE *fichier_resultats = fopen("resultats.txt", "r");    // Open the file "resultats.txt" with the permission to read it
@@ -347,7 +347,6 @@ void on_interaction(struct discord *client, struct discord_message *event)
         {
         const char *command_name = event->data->name;
         const struct discord_application_command_interaction_data_option *command_options = event->data->options;
-        int *nombre_elements = event->data->options->size;
 
         /**
          * @brief command discord used by the client to put their pronostic
@@ -427,7 +426,7 @@ void on_interaction(struct discord *client, struct discord_message *event)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-int main()
+int main(void)
 {
     struct discord *client = discord_init("config.json");
     
