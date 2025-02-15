@@ -28,6 +28,7 @@
  * @brief download the link above to find it
  */
 #include "discord.h"
+#include "interaction.h"
 
 
 /**
@@ -93,7 +94,7 @@ void calculer_score();
  * @param discord_interraction a struct with a pointer *event
  * @note need concord to work
  */
-void on_interaction(struct discord *client, struct discord_interraction *event);
+void on_interaction(struct discord *client, struct discord_message *event);
 
 /**
  * @brief this the struct of pronostic call just after the line
@@ -340,9 +341,9 @@ void calculer_score()
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void on_interaction(struct discord *client, struct discord_interraction *event)
+void on_interaction(struct discord *client, struct discord_message *event)
 {
-    if(event->type == DISCORD_INTERACTION_APPLICATION_COMMAND) //DISCORD_INTERACTION_APPLICATION_COMMAND 
+    if(event->type == DISCORD_INTERACTION_APPLICATION_COMMAND)  
         {
         const char *command_name = event->data->name;
         const struct discord_application_command_interaction_data_option *command_options = event->data->options;
@@ -369,7 +370,7 @@ void on_interaction(struct discord *client, struct discord_interraction *event)
             snprintf(msg_bot, sizeof(msg_bot), "**%s** a enregistré son pronostic :\n %s :first_place:\n %s :second_place:\n %s :third_place:\n %s meilleur tour",
             username, premier, deuxieme, troisieme, meilleur_tour);
 
-            response.type = DISCORD_INTERACTION_CALLBACK_CHANNEL_MESSAGE_WITH_SOURCE;
+            response.type = DISCORD_INTERACTION_CHANNEL_MESSAGE_WITH_SOURCE; //DISCORD_INTERACTION_CALLBACK_CHANNEL_MESSAGE_WITH_SOURCE
             response.data.content = msg_bot;
 
         }
@@ -410,12 +411,12 @@ void on_interaction(struct discord *client, struct discord_interraction *event)
                      "`/admin_result pilote1 pilote2 pilote3 meilleur_tour type` - Ajouter les résultats.\n"
                      "`/scores` - Voir le classement.\n");
 
-            response.type = DISCORD_INTERACTION_CALLBACK_CHANNEL_MESSAGE_WITH_SOURCE;
+            response.type = DISCORD_INTERACTION_CHANNEL_MESSAGE_WITH_SOURCE;
             response.data.content = msg_bot;
         }
         else
         {
-            response.type = DISCORD_INTERACTION_CALLBACK_CHANNEL_MESSAGE_WITH_SOURCE;
+            response.type = DISCORD_INTERACTION_CHANNEL_MESSAGE_WITH_SOURCE;
             response.data.content = ":x: Commande inconnue.\n **/help** pour voir toute les commandes.\n";
         }
         
